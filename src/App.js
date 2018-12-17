@@ -1,25 +1,36 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React, { Component } from "react";
+import SearchBox from "./SearchBox";
+import initRobot from "./CardList";
+import { robots } from "./robots";
+import Scroll from "./Scroll";
 class App extends Component {
+  state = {
+    robots: robots,
+    searchfield: ""
+  };
+
+  onSearchChange = event => {
+    this.setState({ searchfield: event.target.value });
+  };
+  onDeleteClick = id => () => {
+    const listAfterdelete = this.state.robots.filter(robots => {
+      return robots.id !== id;
+    });
+    this.setState({ robots: listAfterdelete });
+    console.log(listAfterdelete);
+  };
+
   render() {
+    const filterRobots = this.state.robots.filter(robots => {
+      return robots.name
+        .toLowerCase()
+        .includes(this.state.searchfield.toLowerCase());
+    });
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className="tc">
+        <h1>ROBOTFRIEND</h1>
+        <SearchBox searchChange={this.onSearchChange} />
+        <Scroll>{initRobot(filterRobots, this.onDeleteClick)}</Scroll>
       </div>
     );
   }
